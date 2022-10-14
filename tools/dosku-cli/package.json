@@ -51,5 +51,18 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
     "prettier": "2.4.1"
-  }
+  },
+  "main": "dosku-cli.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mankins/kudos.git"
+  },
+  "author": "matt mankins",
+  "bugs": {
+    "url": "https://github.com/mankins/kudos/issues"
+  },
+  "homepage": "https://github.com/mankins/kudos#readme"
 }
