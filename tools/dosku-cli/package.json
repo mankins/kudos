@@ -1,6 +1,6 @@
 {
   "name": "@kudos-protocol/dosku-cli",
-  "version": "0.0.1-0",
+  "version": "0.0.1-1",
   "description": "dosku command-line tool",
   "license": "MIT",
   "type": "module",

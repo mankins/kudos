@@ -15,7 +15,7 @@ The `dosku` command line tool can be installed with:
 or used directly
 
 ```
-% npx dosku-cli  ...
+% npx @kudos-protocol/dosku-cli@next  ...
 ```
 
 ## Commands
