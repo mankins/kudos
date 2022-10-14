@@ -12,6 +12,51 @@ importers:
       prettier: 2.7.1
       turbo: 1.5.6
 
+  commands/dosku.basic:
+    specifiers:
+      '@dnslink/js': ^0.12.0
+      '@iarna/toml': ^2.2.5
+      babel-eslint: ^10.1.0
+      better-sqlite3: ^7.5.3
+      chalk: ^4.1.2
+      conf: ^10.0.3
+      dotenv: ^10.0.0
+      env-paths: ^3.0.0
+      eslint: 8.2.0
+      eslint-config-prettier: ^8.3.0
+      eslint-plugin-prettier: ^4.0.0
+      get-stdin: ^9.0.0
+      meow: ^9.0.0
+      mkdirp: ^1.0.4
+      node-fetch: ^3.1.0
+      open: ^8.4.0
+      prettier: 2.4.1
+      prompts: ^2.4.2
+      update-notifier: ^5.1.0
+      uuid: ^8.3.2
+    dependencies:
+      '@dnslink/js': 0.12.0
+      '@iarna/toml': 2.2.5
+      better-sqlite3: 7.6.2
+      chalk: 4.1.2
+      conf: 10.2.0
+      dotenv: 10.0.0
+      env-paths: 3.0.0
+      get-stdin: 9.0.0
+      meow: 9.0.0
+      mkdirp: 1.0.4
+      node-fetch: 3.2.10
+      open: 8.4.0
+      prompts: 2.4.2
+      update-notifier: 5.1.0
+      uuid: 8.3.2
+    devDependencies:
+      babel-eslint: 10.1.0_eslint@8.2.0
+      eslint: 8.2.0
+      eslint-config-prettier: 8.5.0_eslint@8.2.0
+      eslint-plugin-prettier: 4.2.1_a5xml5jd7akwxw4qgpdcdlbbga
+      prettier: 2.4.1
+
   packages/eslint-config-custom:
     specifiers:
       eslint: ^7.23.0
@@ -40,7 +85,6 @@ importers:
       better-sqlite3: ^7.5.3
       chalk: ^4.1.2
       conf: ^10.0.3
-      dosku-cli: ^0.0.1
       dotenv: ^10.0.0
       env-paths: ^3.0.0
       eslint: 8.2.0
@@ -61,7 +105,6 @@ importers:
       better-sqlite3: 7.6.2
       chalk: 4.1.2
       conf: 10.2.0
-      dosku-cli: 'link:'
       dotenv: 10.0.0
       env-paths: 3.0.0
       get-stdin: 9.0.0

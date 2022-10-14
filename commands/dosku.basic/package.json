@@ -1,0 +1,67 @@
+{
+  "name": "@kudos-protocol/dosku-cli-basic",
+  "version": "0.0.0",
+  "description": "dosku command-line tool, base personality",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "dosku.base": "src/cli.js"
+  },
+  "engines": {
+    "node": ">=12"
+  },
+  "scripts": {
+    "pretty": "prettier --check .",
+    "pretty:fix": "prettier --write .",
+    "lint": "eslint --ignore-path .gitignore .",
+    "lint:fix": "prettier --write . && eslint --fix --ignore-path .gitignore .",
+    "release": "np",
+    "test": "echo nyet && exit 0"
+  },
+  "files": [
+    "src/cli.js",
+    "src"
+  ],
+  "keywords": [
+    "cli",
+    "kudos",
+    "dosku",
+    "base"
+  ],
+  "dependencies": {
+    "@dnslink/js": "^0.12.0",
+    "@iarna/toml": "^2.2.5",
+    "chalk": "^4.1.2",
+    "conf": "^10.0.3",
+    "dotenv": "^10.0.0",
+    "env-paths": "^3.0.0",
+    "get-stdin": "^9.0.0",
+    "meow": "^9.0.0",
+    "mkdirp": "^1.0.4",
+    "node-fetch": "^3.1.0",
+    "open": "^8.4.0",
+    "prompts": "^2.4.2",
+    "update-notifier": "^5.1.0",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "eslint": "8.2.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "prettier": "2.4.1"
+  },
+  "main": "src/cli.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mankins/kudos.git"
+  },
+  "author": "matt mankins",
+  "bugs": {
+    "url": "https://github.com/mankins/kudos/issues"
+  },
+  "homepage": "https://github.com/mankins/kudos/tree/main/commands/dosku.basic#readme"
+}
