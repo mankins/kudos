@@ -1,11 +1,11 @@
 {
   "name": "@kudos-protocol/dosku-cli",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "description": "dosku command-line tool",
   "license": "MIT",
   "type": "module",
   "bin": {
-    "dosku": "dosku-cli.js"
+    "dosku": "src/dosku-cli.js"
   },
   "engines": {
     "node": ">=12"
@@ -19,7 +19,7 @@
     "test": "echo nyet && exit 0"
   },
   "files": [
-    "dosku-cli.js",
+    "src/dosku-cli.js",
     "src"
   ],
   "keywords": [
@@ -52,7 +52,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "prettier": "2.4.1"
   },
-  "main": "dosku-cli.js",
+  "main": "src/dosku-cli.js",
   "directories": {
     "doc": "docs"
   },

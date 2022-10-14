@@ -7,8 +7,8 @@ const __dirname = new URL(".", import.meta.url).pathname;
 import dotenv from "dotenv";
 dotenv.config({ path: __dirname + ".env" });
 
-import config from "./src/config.js";
-import dosku from "./src/index.js";
+import config from "./config.js";
+import dosku from "./index.js";
 
 // const pkgJson = JSON.parse(fs.readFileSync("./package.json"));
 
