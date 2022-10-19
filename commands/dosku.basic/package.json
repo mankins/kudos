@@ -1,6 +1,6 @@
 {
   "name": "@kudos-protocol/dosku-cli-basic",
-  "version": "0.0.1-0",
+  "version": "0.0.1-1",
   "description": "dosku command-line tool, base personality",
   "license": "MIT",
   "type": "module",
@@ -31,6 +31,7 @@
   "dependencies": {
     "@dnslink/js": "^0.12.0",
     "@iarna/toml": "^2.2.5",
+    "better-sqlite3": "^7.5.3",
     "chalk": "^4.1.2",
     "conf": "^10.0.3",
     "dotenv": "^10.0.0",

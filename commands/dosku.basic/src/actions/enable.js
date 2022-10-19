@@ -5,12 +5,11 @@ import prompts from 'prompts';
 
 const log = console.log;
 
-const possibleCommands = ['echo'];
+const possibleCommands = ['echo', 'ink'];
 
 // run sub command
 const exec = async (context) => {
   const subcommand = context.input[1];
-  const subcommands = context.config.get('subcommands') || {};
   if (subcommand || context.flags.all) {
     // context.config.set('subcommands', subcommands);
     // if (!context.flags.quiet) {
@@ -29,7 +28,9 @@ const exec = async (context) => {
       toEnable.push(...possibleCommands);
     }
 
-    toEnable.map(async (commandName) => {
+    await toEnable.reduce(async (acc, commandName) => {
+      await acc;
+
       const response = await prompts([
         {
           type: 'confirm',
@@ -46,7 +47,7 @@ const exec = async (context) => {
           } else {
             process.exit(0);
           }  
-    });
+    },Promise.resolve());
   } else {
     log(`Usage: ${context.personality} enable [subcommand] [--all]`);
     process.exit(2);
