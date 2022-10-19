@@ -16,7 +16,10 @@ const exec = (context) => {
     commandArgs.unshift(...subcommands[subcommand]);
     const out = child_process.execFileSync(
       commandArgs[0],
-      commandArgs.slice(1)
+      commandArgs.slice(1),
+      {
+        input: context.stdin,
+      }
     );
     log(out.toString());
   } else {
