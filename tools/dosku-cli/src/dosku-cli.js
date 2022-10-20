@@ -34,9 +34,13 @@ const defaultHelp = `
     $ dosku config set arrayKey val1 val2 --array
     $ dosku config del key
 
+    Basic Kudos Protocol
+    $ dosku ink twitter:identifier [--weight=1] [--createTime=now] [--src=cli] [--description=""]
+    $ dosku list [--cohort=current] [--outFile=STDOUT] [--timestamp=now] [--quiet=false]
+
     Run Commands
-    $ dosku subcommand
-    executes -> dosku.subcommand @params
+    $ dosku run subcommand
+    looks up subcommand and executes -> dosku.personality subcommand @params
 `;
 
 const cli = meow(defaultHelp, {
