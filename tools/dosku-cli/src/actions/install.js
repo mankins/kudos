@@ -1,5 +1,3 @@
-import * as child_process from 'child_process';
-
 import chalk from "chalk";
 
 const log = console.log;

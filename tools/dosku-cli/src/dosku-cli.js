@@ -60,8 +60,7 @@ if (cli.input.length === 0 || cli.input[0] === "help") {
   process.stderr.write(`${defaultHelp}\n`);
   process.exit(0);
 }
-
-dosku({ action: cli.input[0], flags: cli.flags, input: cli.input, config });
+dosku({ action: cli.input[0], flags: cli.flags, input: cli.input, config, argv: process.argv.slice(2) });
 
 // updateNotifier({
 //   pkg: pkgJson,

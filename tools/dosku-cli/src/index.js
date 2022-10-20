@@ -11,9 +11,9 @@ const dosku = async (commandInput) => {
   // read from STDIN. stdin = '' if no input
   const stdin = await getStdin();
 
-  const { action, flags, input } = commandInput;
+  const { action, argv, flags, input } = commandInput;
   flags.debug &&
-    log(chalk.green(JSON.stringify({ action, flags, stdin, input })));
+    log(chalk.green(JSON.stringify({ action,argv, flags, stdin, input })));
 
   if (Object.prototype.hasOwnProperty.call(actions, action)) {
     const context = { ...commandInput, stdin };
@@ -22,7 +22,7 @@ const dosku = async (commandInput) => {
     setFlagDefaults(context); // allow flag defaults to be set from ENV
     actions[action].exec(context);
   } else {
-    log(chalk.red(`Action ${action} not found`));
+    log(chalk.red(`ActioN ${action} not found`));
     process.exit(1);
   }
 };

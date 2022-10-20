@@ -8,6 +8,9 @@ const normalizeIdentifier = (
   // we want another layer to parse and remove @
   // we should return a prefixed (scoped) identifier in lowercase, delim with a :
 
+  if (rawIdentifier.length < 1) {
+    throw new Error("identifier not found");
+  }
   if (rawIdentifier.indexOf("@") !== -1) {
     throw new Error("identifier should not contain @");
   }

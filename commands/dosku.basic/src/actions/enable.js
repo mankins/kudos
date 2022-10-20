@@ -3,7 +3,7 @@ import prompts from "prompts";
 
 const log = console.log;
 
-const possibleCommands = ["echo", "ink"];
+const possibleCommands = ["echo", "ink", "list"];
 
 // run sub command
 const exec = async (context) => {

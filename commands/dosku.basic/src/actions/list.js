@@ -29,6 +29,7 @@ const exec = async (context) => {
   } else {
     log(outData);
   }
+  process.exit(0);
 };
 
 export { exec };
