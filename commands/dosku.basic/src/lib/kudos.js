@@ -3,7 +3,8 @@ import chalk from "chalk";
 import envPaths from "env-paths";
 import fs from "fs";
 import mkdirp from "mkdirp";
-import Database from "better-sqlite3";
+// import Database from "better-sqlite3";
+import Knex from "knex";
 import { currentCohort } from "./date.js";
 
 const paths = envPaths("dosku-basic");
@@ -57,20 +58,35 @@ const initDb = async () => {
 
   // STEP 2: make sure db exists, return it
   const kudosDbPath = `${kudosDataDir}/kudos.db`;
-  const db = new Database(kudosDbPath, {
-    readonly: false,
+  const db = Knex({
+    client: "better-sqlite3",
+    connection: {
+      filename: kudosDbPath,
+    },
+    debug: process.env.KUDOS_DEBUG === "true",
+    useNullAsDefault: true,
   });
 
-  const statement = `CREATE TABLE IF NOT EXISTS kudos (
-    user INT,
-    cohort TEXT,
-    identifier TEXT, 
-    weight FLOAT,   
-    create_time DATETIME, 
-    description TEXT 
-);`;
+  const exists = await db.schema.hasTable("kudos");
+  if (!exists) {
+    devLog("Creating Kudos Database");
+    const uuidGenerationRaw =
+      db.client.config.client.indexOf("sqlite3") !== -1
+        ? `(lower(hex(randomblob(4))) || '-' || lower(hex(randomblob(2))) || '-4' || substr(lower(hex(randomblob(2))),2) || '-' || substr('89ab',abs(random()) % 4 + 1, 1) || substr(lower(hex(randomblob(2))),2) || '-' || lower(hex(randomblob(6))))`
+        : `uuid_generate_v4()`;
 
-  db.exec(statement);
+    await db.schema.createTable("kudos", function (t) {
+      t.uuid("id").primary().defaultTo(db.raw(uuidGenerationRaw));
+      t.smallint("user").notNullable();
+      t.string("cohort", 10).notNullable();
+      t.string("identifier", 255).notNullable();
+      t.float("weight").defaultTo(1);
+      t.timestamp("create_time").defaultTo(db.fn.now());
+      t.string("description", 255).notNullable();
+    });
+  } else {
+    devLog("exists");
+  }
 
   return db;
 };
@@ -80,29 +96,40 @@ const store = async (kudo) => {
   // make sure paths exist, db initialized
   const db = await initDb();
 
-  const statement = `INSERT INTO kudos (user, cohort, identifier, weight, create_time, description) VALUES (?, ?, ?, ?, ?, ?)`;
-  const values = [
-    kudo.user,  
-    kudo.cohort,
-    kudo.identifier,
-    (parseFloat(kudo.weight) || 100) / 100,
-    kudo.createTime,
-    kudo.description,
-  ];
-  const result = db.prepare(statement).run(values);
+  const result = await db("kudos").insert({
+    user: kudo.user,
+    cohort: kudo.cohort,
+    identifier: kudo.identifier,
+    weight: (parseFloat(kudo.weight) || 100) / 100,
+    create_time: kudo.createTime,
+    description: kudo.description,
+  });
   if (result) {
     devLog(chalk.green("stored"));
   }
-  db.close();
+  db.destroy();
   return result ? true : false;
 };
 
-const getCohort = async ({ user = 1, cohort }) => {
+// returns the entries for a given cohort
+const getCohortEntries = async ({ user = 1, cohort }) => {
   const db = await initDb();
 
-  const statement = `select count(*) as transactions, sum(weight) as cohortWeight, identifier, cohort from kudos where cohort = ? and user = ? group by identifier`;
-  const values = [cohort, user];
-  const result = db.prepare(statement).all(values);
+  const result = await db("kudos")
+    .select(
+      "identifier",
+      "cohort",
+      "weight",
+      "create_time",
+      "description",
+      "id"
+    )
+    .where("cohort", "=", cohort)
+    .where("user", "=", user)
+    .orderBy("create_time", "asc");
+
+  db.destroy();
+
   return result;
 };
 
@@ -114,4 +141,4 @@ const resetCohort = async ({ user = 1, cohort }) => {
   return db.prepare(statement).run(values);
 };
 
-export { create, getCohort, resetCohort, store };
+export { create, getCohortEntries, resetCohort, store };

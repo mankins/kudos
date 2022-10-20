@@ -12,15 +12,21 @@ const exec = async (context) => {
     ? new Date(flags.createTime).toISOString()
     : new Date().toISOString(); // '2022-03-07T10:27:27.718Z'
   kudoData.weight = flags.weight ? parseFloat(flags.weight) : 100;
-  kudoData.src = flags.src ? flags.src : (context.personality || "cli");
+  kudoData.src = flags.src ? flags.src : context.personality || "cli";
   kudoData.description = flags.description ? flags.description : "";
 
   if (context.input[1]) {
     // we have an identifier something of the form twitter:mankins or @mankins or mankins with --scope=twitter
     try {
-      kudoData.identifier = normalizeIdentifier(context.input[1], {DEFAULT_SCOPE: flags.scope});
+      kudoData.identifier = normalizeIdentifier(context.input[1], {
+        DEFAULT_SCOPE: flags.scope,
+      });
     } catch (e) {
-      log(chalk.red(`Identifier format error: ${kudoData.identifier}\n\n\t${e.message}`));
+      log(
+        chalk.red(
+          `Identifier format error: ${kudoData.identifier}\n\n\t${e.message}`
+        )
+      );
       process.exit(2);
     }
     const kudo = await create(kudoData);

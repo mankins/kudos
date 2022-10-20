@@ -3,7 +3,7 @@ import meow from "meow";
 // import updateNotifier from "update-notifier";
 import { URL } from "url";
 const __dirname = new URL(".", import.meta.url).pathname;
-const personality = __dirname.split('/').slice(-3)[0];
+const personality = __dirname.split("/").slice(-3)[0];
 
 import dotenv from "dotenv";
 dotenv.config({ path: __dirname + ".env" });
@@ -54,7 +54,14 @@ if (cli.input.length === 0 || cli.input[0] === "help") {
   process.exit(0);
 }
 
-dosku({ action: cli.input[0], flags: cli.flags, input: cli.input, config, personality, bin: `${__dirname}cli.js` });
+dosku({
+  action: cli.input[0],
+  flags: cli.flags,
+  input: cli.input,
+  config,
+  personality,
+  bin: `${__dirname}cli.js`,
+});
 
 // updateNotifier({
 //   pkg: pkgJson,
