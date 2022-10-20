@@ -5,10 +5,10 @@ const log = console.log;
 // run sub command
 const exec = (context) => {
   const subcommand = context.input[1];
-  const subcommands = context.config.get('subcommands') || {};
+  const subcommands = context.config.get("subcommands") || {};
   if (subcommand) {
     subcommands[subcommand] = context.input.slice(2);
-    context.config.set('subcommands', subcommands);
+    context.config.set("subcommands", subcommands);
     if (!context.flags.quiet) {
       log(chalk.green(`Installed ${subcommand}.`));
     }

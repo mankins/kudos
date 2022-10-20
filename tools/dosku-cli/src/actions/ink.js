@@ -18,7 +18,7 @@ const exec = (context) => {
       });
       log(out.toString());
     } catch (e) {
-//      log({ e });
+      //      log({ e });
       e.output.forEach((thing) => {
         if (thing) {
           log(thing.toString());

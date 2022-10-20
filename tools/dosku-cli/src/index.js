@@ -13,7 +13,7 @@ const dosku = async (commandInput) => {
 
   const { action, argv, flags, input } = commandInput;
   flags.debug &&
-    log(chalk.green(JSON.stringify({ action,argv, flags, stdin, input })));
+    log(chalk.green(JSON.stringify({ action, argv, flags, stdin, input })));
 
   if (Object.prototype.hasOwnProperty.call(actions, action)) {
     const context = { ...commandInput, stdin };

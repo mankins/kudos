@@ -26,7 +26,7 @@ Because kudos can be implemented in multiple ways, this cli is a glue layer to m
 % dosku run SUBCOMMAND
 ```
 
-`dosku` does not come with any subcommands installed by default. 
+`dosku` does not come with any subcommands installed by default.
 
 ## Usage
 
@@ -53,4 +53,3 @@ $ dosku --help
     $ dosku config set arrayKey val1 val2 --array
     $ dosku config del subcommands.thing
 ```
-
