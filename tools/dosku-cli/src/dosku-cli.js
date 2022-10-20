@@ -35,7 +35,7 @@ const defaultHelp = `
     $ dosku config del key
 
     Basic Kudos Protocol
-    $ dosku ink twitter:identifier [--weight=1] [--createTime=now] [--src=cli] [--description=""]
+    $ dosku ink [<STDIN = json new line delimited>] [twitter:identifier] [--weight=1] [--createTime=now] [--src=cli] [--description=""]
     $ dosku list [--cohort=current] [--outFile=STDOUT] [--timestamp=now] [--quiet=false]
 
     Run Commands

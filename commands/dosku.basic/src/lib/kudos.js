@@ -11,6 +11,8 @@ const paths = envPaths("dosku-basic");
 
 const devLog = process.env.KUDOS_DEBUG === "true" ? console.log : () => {};
 
+let db;
+
 const create = async (kudo) => {
   // log(chalk.green('create'));
 
@@ -23,9 +25,16 @@ const create = async (kudo) => {
   kudo.cohort = kudo.cohort || currentCohort(kudo.createTime);
 
   kudo.user = kudo.user || 1; // local user id
-  kudo.weight = kudo.weight || 100; //  100 / n
-  if (kudo.weight > 100) {
-    kudo.weight = 100;
+  kudo.weight = parseFloat(kudo.weight);
+  console.log({ kudo });
+  if (kudo.weight > 1) {
+    kudo.weight = 1;
+  }
+  if (kudo.weight < 0) {
+    kudo.weight = 0;
+  }
+  if (kudo.weight === 0) {
+    throw new Error("weight is zero");
   }
   kudo.createTime = kudo.createTime || new Date().toISOString();
   kudo.description = kudo.description || "";
@@ -34,6 +43,10 @@ const create = async (kudo) => {
 };
 
 const initDb = async () => {
+  if (db) {
+    // we already have a db object
+    return db;
+  }
   // STEP 1: make sure data directory exists
   const kudosDataDir = paths.data;
   try {
@@ -58,7 +71,7 @@ const initDb = async () => {
 
   // STEP 2: make sure db exists, return it
   const kudosDbPath = `${kudosDataDir}/kudos.db`;
-  const db = Knex({
+  db = Knex({
     client: "better-sqlite3",
     connection: {
       filename: kudosDbPath,
@@ -81,7 +94,7 @@ const initDb = async () => {
       t.string("cohort", 10).notNullable();
       t.string("identifier", 255).notNullable();
       t.float("weight").defaultTo(1);
-      t.timestamp("create_time").defaultTo(db.fn.now());
+      t.timestamp("createTime").defaultTo(db.fn.now());
       t.string("description", 255).notNullable();
     });
   } else {
@@ -100,8 +113,8 @@ const store = async (kudo) => {
     user: kudo.user,
     cohort: kudo.cohort,
     identifier: kudo.identifier,
-    weight: (parseFloat(kudo.weight) || 100) / 100,
-    create_time: kudo.createTime,
+    weight: kudo.weight,
+    createTime: kudo.createTime,
     description: kudo.description,
   });
   if (result) {
@@ -116,17 +129,10 @@ const getCohortEntries = async ({ user = 1, cohort }) => {
   const db = await initDb();
 
   const result = await db("kudos")
-    .select(
-      "identifier",
-      "cohort",
-      "weight",
-      "create_time",
-      "description",
-      "id"
-    )
+    .select("identifier", "cohort", "weight", "createTime", "description", "id")
     .where("cohort", "=", cohort)
     .where("user", "=", user)
-    .orderBy("create_time", "asc");
+    .orderBy("createTime", "asc");
 
   db.destroy();
 
