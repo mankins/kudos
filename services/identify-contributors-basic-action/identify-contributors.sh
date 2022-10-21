@@ -6,13 +6,15 @@ cd $1
 # simple example, extract from node js package.json
 rm /tmp/kudos.txt
 
+echo "nodejs..."
+
 # try contributors
-cat package.json | jq -r '.contributors[]' >> /tmp/kudos.txt
+find . -type f -name 'package.json' -prune | while read line; do cat "$line" | jq -r '.contributors[].email' | grep -v null >> /tmp/kudos.txt; done
 
 # try maintainers
-cat package.json | jq -r '.maintainers[]' >> /tmp/kudos.txt
+find . -type f -name 'package.json' -prune | while read line; do cat "$line" | jq -r '.maintainers[].email' | grep -v null >> /tmp/kudos.txt; done
 
-echo "Kudos to:"
+echo "Contributors:"
 echo "-start-"
 cat /tmp/kudos.txt | sort | uniq
 echo "-end-"

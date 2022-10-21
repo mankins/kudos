@@ -13,7 +13,7 @@ jobs:
         uses: ./services/identify-contributors-basic-action # Uses an action in the root directory
         id: identify
         with:
-          path: '.'
+          path: '../..'
       - name: Contributors found
         run: echo "${{ steps.identify.outputs.contributors }}"
   
