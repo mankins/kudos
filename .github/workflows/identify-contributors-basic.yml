@@ -1,0 +1,19 @@
+on: [push]
+
+jobs:
+  kudos_identify_job:
+    runs-on: ubuntu-latest
+    name: Identify Contributors Basic
+    steps:
+      # To use this repository's private action,
+      # you must check out the repository
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Identify Contributors action step
+        uses: ./services/identify-contributors-basic-action # Uses an action in the root directory
+        id: identify
+        with:
+          path: '.'
+      - name: Contributors found
+        run: echo "${{ steps.identify.outputs.contributors }}"
+  
