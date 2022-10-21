@@ -8,6 +8,8 @@ rm /tmp/kudos.txt
 
 echo "nodejs..."
 
+find .
+
 # try contributors
 find . -type f -name 'package.json' -prune | while read line; do cat "$line" | jq -r '.contributors[].email' | grep -v null >> /tmp/kudos.txt; done
 
