@@ -1,6 +1,6 @@
 import chalk from "chalk";
 
-import { create, store } from "../lib/kudos.js";
+import { create, store, done } from "../lib/kudos.js";
 import { normalizeIdentifier } from "../lib/identifiers.js";
 
 const log = console.log;
@@ -42,7 +42,8 @@ const exec = async (context) => {
         )
       );
     }
-    store(kudo);
+    await store(kudo);
+    done();
   } else if (context.stdin) {
     try {
       const jsonRows = context.stdin.split(/\n|\n\r/).filter(Boolean);
@@ -70,12 +71,13 @@ const exec = async (context) => {
             )
           );
         }
-        store(kudo);
+        await store(kudo);
       }
     } catch (e) {
       log(chalk.red(e.message), e);
       process.exit(1);
     }
+    done();
   } else {
     log(
       `Usage: dosku ink [<STDIN:ndjson>] [twitter:identifier] [--weight=1] [--createTime=now] [--src=cli] [--description=""]

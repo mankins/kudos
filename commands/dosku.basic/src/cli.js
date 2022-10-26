@@ -28,8 +28,11 @@ const defaultHelp = `
     Examples
     $ ${personality}
 
+    Install
+    % ${personality} enable --all
+
     Run Commands
-    $ ${personality} echo
+    $ ${personality} echo    
 `;
 
 const cli = meow(defaultHelp, {

@@ -3,7 +3,7 @@ import prompts from "prompts";
 
 const log = console.log;
 
-const possibleCommands = ["echo", "ink", "list"];
+const possibleCommands = ["echo", "ink", "list", "identify"];
 
 // run sub command
 const exec = async (context) => {
@@ -47,7 +47,7 @@ const exec = async (context) => {
           commandName,
         ]);
       } else {
-        process.exit(0);
+        // skip this one. 
       }
     }, Promise.resolve());
   } else {

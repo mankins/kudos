@@ -8,28 +8,38 @@ const normalizeIdentifier = (
   // we want another layer to parse and remove @
   // we should return a prefixed (scoped) identifier in lowercase, delim with a :
 
-  if (rawIdentifier.length < 1) {
-    throw new Error("identifier not found");
-  }
-  if (rawIdentifier.indexOf("@") !== -1) {
-    throw new Error("identifier should not contain @");
-  }
-  if (rawIdentifier.match(/\s/)) {
-    throw new Error("identifier should not contain whitespace");
+  // rawIdentifier may contain a SCOPE:IDENTIFIER
+  // if not, we will use the default scope
+  // if the scope is not recognized, we will throw an error
+
+  // check if rawIdentifier contains a scope
+  const scopeDelimiter = ":";
+  const scopeDelimiterIndex = rawIdentifier.indexOf(scopeDelimiter);
+  let scope;
+  let identifier;
+  if (scopeDelimiterIndex > -1) {
+    // we have a scope
+    scope = rawIdentifier.slice(0, scopeDelimiterIndex);
+    identifier = rawIdentifier.slice(scopeDelimiterIndex + 1);
+  } else {
+    // we do not have a scope
+    scope = DEFAULT_SCOPE;
+    identifier = rawIdentifier;
   }
 
-  let identifier = rawIdentifier.toLowerCase();
+  if (identifier.length < 1) {
+    throw new Error("identifier not found");
+  }
+  if (scope.indexOf("@") !== -1) {
+    throw new Error("scope should not contain @");
+  }
+  if (scope.match(/\s/)) {
+    throw new Error("scope should not contain whitespace");
+  }
 
   // scope should not contain a :, but value could?
 
-  // expect: [SCOPE:]VALUE
-  if (identifier.indexOf(":") === -1) {
-    // received: creatorid or @creatorid
-    // normalized: DEFAULT_SCOPE:creatorid
-    return `${DEFAULT_SCOPE}:${identifier}`;
-  } else {
-    return identifier;
-  }
+    return `${scope}:${identifier}`;
 };
 
 export { normalizeIdentifier };

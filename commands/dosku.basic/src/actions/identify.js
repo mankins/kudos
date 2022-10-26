@@ -158,7 +158,7 @@ const exec = async (context) => {
           const attribution = kudos.creators[j];
           addCreator({
             context: { ...kudos.context, ...creatorContext },
-            attribution: { ...kudos.attribution, ...attribution},
+            attribution: { ...kudos.attribution, ...attribution },
             weight: 1 / (kudos.creators.length + 1),
           });
         }
@@ -296,7 +296,7 @@ const exec = async (context) => {
             addCreator({
               attribution,
               context,
-              weight: weights[pkg.name] || 1.0, 
+              weight: weights[pkg.name] || 1.0,
               // it's true that each contributor will get the full weight rather than a split weight
               // based on the number of contributors. We think this may be desirable to change the weights
               // based on the package and not the contributor. But we'll see.
@@ -380,11 +380,15 @@ const exec = async (context) => {
     }
   }
 
-  // serialize creators as ndjson
-  // loop through creators, emit ndjson
-  for (let i = 0; i < creators.length; i += 1) {
-    const creator = creators[i];
-    outData += JSON.stringify(creator) + "\n";
+  try {
+    // serialize creators as ndjson
+    // loop through creators, emit ndjson
+    for (let i = 0; i < creators.length; i += 1) {
+      const creator = creators[i];
+      outData += JSON.stringify(creator) + "\n";
+    }
+  } catch (e) {
+    log(e, "error serializing creators");
   }
 
   if (flags.outFile) {

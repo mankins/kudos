@@ -96,6 +96,8 @@ const initDb = async () => {
       t.float("weight").defaultTo(1);
       t.timestamp("createTime").defaultTo(db.fn.now());
       t.string("description", 255).notNullable();
+      t.uuid("traceId").nullable();
+      t.json("context").nullable();
     });
   } else {
     devLog("exists");
@@ -116,11 +118,12 @@ const store = async (kudo) => {
     weight: kudo.weight,
     createTime: kudo.createTime,
     description: kudo.description,
+    context: JSON.stringify(kudo.context || {}),
   });
   if (result) {
     devLog(chalk.green("stored"));
   }
-  db.destroy();
+  // db.destroy();
   return result ? true : false;
 };
 
@@ -129,12 +132,17 @@ const getCohortEntries = async ({ user = 1, cohort }) => {
   const db = await initDb();
 
   const result = await db("kudos")
-    .select("identifier", "cohort", "weight", "createTime", "description", "id")
+    .select("identifier", "cohort", "weight", "createTime", "description", "id", "context")
     .where("cohort", "=", cohort)
     .where("user", "=", user)
     .orderBy("createTime", "asc");
 
-  db.destroy();
+  // iterate through result, JSON.parse context
+  result.forEach((row) => {
+    row.context = JSON.parse(row.context);
+  });
+
+  // db.destroy();
 
   return result;
 };
@@ -147,4 +155,10 @@ const resetCohort = async ({ user = 1, cohort }) => {
   return db.prepare(statement).run(values);
 };
 
-export { create, getCohortEntries, resetCohort, store };
+const done = async () => {
+  if (db) {
+    db.destroy();
+  }
+};
+
+export { create, done, getCohortEntries, resetCohort, store };
