@@ -1,4 +1,6 @@
 # Kudos to our creators:
+context: 
+  description: Example Kudos File. Add Description here.
 creators:
   # everything in a single creator map is treated as being about the same entity
   - email: mankins@gmail.com
