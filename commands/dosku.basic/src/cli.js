@@ -33,6 +33,9 @@ const defaultHelp = `
 
     Run Commands
     $ ${personality} echo    
+    $ ${personality} identify    
+    $ ${personality} ink    
+    $ ${personality} list   
 `;
 
 const cli = meow(defaultHelp, {

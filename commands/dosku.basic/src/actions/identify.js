@@ -3,12 +3,15 @@
 // import { currentCohort } from "../lib/date.js";
 import fs from "fs";
 import * as child_process from "child_process";
+import { promisify } from "util";
 
 import chalk from "chalk";
-import glob from "tiny-glob";
+import _glob from "glob";
+const glob = promisify(_glob);
 import { v4 as uuidv4 } from "uuid";
 import parseAuthor from "parse-author";
 import YAML from "yaml";
+import path from "path";
 
 // import * as objectSha from "object-sha";
 
@@ -29,7 +32,7 @@ const exec = async (context) => {
   if (flags.help || !rootDir) {
     console.error(
       `Usage:
- $ ${context.personality} identify [--outFile=STDOUT] [--kudosFile=kudos.yml] [--checks={kudos,authors,lang}] [--lang={nodejs,go}] SEARCH_DIR`
+ $ ${context.personality} identify [--outFile=STDOUT] [--kudosFile=kudos.yml] [--checks={kudos,contributors,lang}] [--lang={nodejs,go}] SEARCH_DIR`
     );
     process.exit(0);
   }
@@ -144,7 +147,9 @@ const exec = async (context) => {
       debugLog(chalk.green("Checking for kudos.yml files..."));
     }
 
-    let files = await glob(`${rootDirPath}/**/${kudosFile}`);
+    let files = await glob(`${rootDirPath}/**/${kudosFile}`, {
+      follow: true, // this can lead to infinite loops. TODO: set a timeout for the whole thing?
+    });
     for (let i = 0; i < files.length; i += 1) {
       try {
         const file = files[i];
@@ -171,7 +176,15 @@ const exec = async (context) => {
 
   // do nodejs specific checks
   if (langs.has("nodejs")) {
+    if (flags.debug) {
+      debugLog(chalk.green("Checking for nodejs files..."));
+    }
+
     if (checks.has("contributors")) {
+      if (flags.debug) {
+        debugLog(chalk.green("Checking for contributors..."));
+      }
+
       // look for contributors in package.json files
       if (flags.debug) {
         debugLog(
@@ -179,7 +192,9 @@ const exec = async (context) => {
         );
       }
 
-      let files = await glob(`${rootDirPath}/**/package.json`);
+      let files = await glob(`${rootDirPath}/**/package.json`, {
+        follow: true,
+      });
       const packages = {}; // cache of package.json files
       let mainPackage = {};
       const weights = {};
@@ -187,13 +202,13 @@ const exec = async (context) => {
         try {
           const file = files[i];
           const data = fs.readFileSync(file);
-          if (flags.debug) {
-            console.error("file", file);
-          }
           const pkg = JSON.parse(data.toString());
           pkg._dosku_file = file;
           packages[pkg.name] = pkg;
-          if (file === (flags.main || "package.json")) {
+          if (flags.debug) {
+            console.error("file", file, pkg.name);
+          }
+          if (file === (flags.main || `${rootDirPath}/package.json`)) {
             mainPackage = pkg;
           }
         } catch (err) {
@@ -226,24 +241,53 @@ const exec = async (context) => {
         // contributor getting 1/10th of the weight, they each get the full weight.
         // This is a bit weird, but it's the best we can do for now.
         // Would like to model this out but I suspect we may get better results with a different
-        // more complex weighting algorithm.
+        // more complex/fair weighting algorithm.
         const getWeight = (pkg, weight) => {
           if (flags.debug) {
-            debuglog(chalk.blue("getWeight", pkg.name, weight));
+            debugLog(chalk.blue("getWeight", pkg.name, weight));
           }
-          if (pkg.name) {
-            weights[pkg.name] = weight + parseFloat(weights[pkg.name] || 0);
+        
+          if (pkg.name && !weights[pkg.name]) {
+            weights[pkg.name] = weight;
+            if (flags.debug) {
+              debugLog(chalk.blueBright("weight", weights[pkg.name]));
+            }
             if (pkg.dependencies) {
-              const splitWeight =
-                weight / (Object.keys(pkg.dependencies).length + 1);
+              const splitWeight = weight / (Object.keys(pkg?.dependencies).length + 1);
               if (flags.debug) {
-                debugLog(Object.keys(pkg.dependencies).length, "dep len");
                 debugLog(chalk.cyan("splitWeight", splitWeight));
               }
               for (const depName in pkg.dependencies) {
+                if (flags.debug) {
+                  debugLog(chalk.cyan("depName", depName));
+                }
                 const dep = packages[depName];
                 if (dep && dep.name) {
                   getWeight(dep, splitWeight);
+                } else {
+                  if (flags.debug) {
+                    debugLog(chalk.red("no dep"), { dep });
+                  }
+                }
+              }
+            }
+            if (flags.nodeDevDependencies && pkg.devDependencies) {
+              // opt in with --nodeDevDependencies
+              const splitWeight = weight / (Object.keys(pkg?.devDependencies).length + 1);
+              if (flags.debug) {
+                debugLog(chalk.cyan("splitWeight", splitWeight));
+              }
+              for (const depName in pkg.devDependencies) {
+                if (flags.debug) {
+                  debugLog(chalk.cyan("depName", depName));
+                }
+                const dep = packages[depName];
+                if (dep && dep.name) {
+                  getWeight(dep, splitWeight);
+                } else {
+                  if (flags.debug) {
+                    debugLog(chalk.red("no dep"), { dep });
+                  }
                 }
               }
             }
@@ -253,11 +297,19 @@ const exec = async (context) => {
         if (flags.debug) {
           debugLog("weights", weights);
         }
+      } else {
+        // no main package?
+        if (flags.debug) {
+          debugLog(chalk.red("no main package"));
+        }
       }
 
       // now go through each cached package.json file in packages and search for creators
       for (const pkgName in packages) {
         const pkg = packages[pkgName];
+        if (flags.debug) {
+          debugLog(chalk.cyan("Checking", pkgName));
+        }
         // see if there's no weight
         if (!weights[pkg.name]) {
           // assume this is an extraneous package
