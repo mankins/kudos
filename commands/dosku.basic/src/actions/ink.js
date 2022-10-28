@@ -1,4 +1,6 @@
+import fs from "fs";
 import chalk from "chalk";
+import readline from 'readline';
 
 import { create, store, done } from "../lib/kudos.js";
 import { normalizeIdentifier } from "../lib/identifiers.js";
@@ -45,48 +47,77 @@ const exec = async (context) => {
     await store(kudo);
     done();
   } else if (context.stdin) {
-    try {
-      const jsonRows = context.stdin.split(/\n|\n\r/).filter(Boolean);
-      const rows = jsonRows.map((jsonStringRow) => JSON.parse(jsonStringRow));
-      //log({jsonRows, rows});
-      for (const kudoData of rows) {
-        try {
-          kudoData.identifier = normalizeIdentifier(kudoData.identifier, {
-            DEFAULT_SCOPE: flags.scope,
-          });
-        } catch (e) {
-          log(
-            chalk.red(
-              `Identifier format error: ${kudoData.identifier}\n\n\t${e.message}`
-            )
-          );
-          process.exit(2);
-        }
-        // log(kudoData);
-        const kudo = await create(kudoData); // TODO: flag to skip on errors
-        if (flags.verbose) {
-          log(
-            chalk.green(
-              `Kudos ${kudo.identifier} created at ${kudo.createTime} [${kudo.weight}]`
-            )
-          );
-        }
-        await store(kudo);
-      }
-    } catch (e) {
-      log(chalk.red(e.message), e);
-      process.exit(1);
-    }
-    done();
-  } else {
-    log(
-      `Usage: dosku ink [<STDIN:ndjson>] [twitter:identifier] [--weight=1] [--createTime=now] [--src=cli] [--description=""]
+    let dataRead = false;
 
-Example NDJSON import from previous list:
-      cat /tmp/abc | jq -cM '.entries[]' | dosku ink
-      `
-    );
-    process.exit(2);
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+      terminal: false
+    });
+    
+      let chunkBuffer = '';
+      rl.on('line', async (chunk) => {
+        dataRead = true;
+      try {
+        log(chalk.green(`Kudos ${chunk} read`));
+        // const jsonRows = chunk
+        //   .toString()
+        //   .split(/\n|\n\r/)
+        //   .filter(Boolean);
+        // const rows = jsonRows.map((jsonStringRow) => JSON.parse(jsonStringRow));
+        //log({jsonRows, rows});
+        let rows;
+        chunkBuffer = chunkBuffer + chunk;
+        try {
+         rows = [JSON.parse(chunk)];
+        } catch (e) {
+          log(chalk.red(`Error parsing JSON: ${chunk}`));
+          return;
+        }
+        chunkBuffer = '';
+        for (const kudoData of rows) {
+          try {
+            kudoData.identifier = normalizeIdentifier(kudoData.identifier, {
+              DEFAULT_SCOPE: flags.scope,
+            });
+          } catch (e) {
+            log(
+              chalk.red(
+                `Identifier format error: ${kudoData.identifier}\n\n\t${e.message}`
+              )
+            );
+            // process.exit(2);
+          }
+          // log(kudoData);
+          const kudo = await create(kudoData); // TODO: flag to skip on errors
+          if (flags.verbose) {
+            log(
+              chalk.green(
+                `Kudos ${kudo.identifier} created at ${kudo.createTime} [${kudo.weight}]`
+              )
+            );
+          }
+          log(chalk.white(JSON.stringify(kudo)));
+          await store(kudo);
+        }
+      } catch (e) {
+        log(chalk.red(e.message), e);
+        process.exit(1);
+      }
+    });
+    rl.once('close', () => {
+      if (!dataRead) {
+        log(
+          `Usage: dosku ink [<STDIN:ndjson>] [twitter:identifier] [--weight=1] [--createTime=now] [--src=cli] [--description=""]
+    
+    Example NDJSON import from previous list:
+          cat /tmp/abc | jq -cM '.entries[]' | dosku ink
+          `
+        );
+        process.exit(0);
+      }
+      done();
+    });
   }
 };
 

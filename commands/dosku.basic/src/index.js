@@ -9,8 +9,8 @@ const log = console.log;
 // call the action with the given name
 const dosku = async (commandInput) => {
   // read from STDIN. stdin = '' if no input
-  const stdin = await getStdin();
-
+  // const stdin = await getStdin();
+  const stdin = process.stdin;
   const { action, flags, input } = commandInput;
   flags.debug &&
     log(chalk.green(JSON.stringify({ action, flags, stdin, input })));

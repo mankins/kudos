@@ -112,6 +112,7 @@ const store = async (kudo) => {
   const db = await initDb();
 
   const result = await db("kudos").insert({
+    id: kudo.id,
     user: kudo.user,
     cohort: kudo.cohort,
     identifier: kudo.identifier,
