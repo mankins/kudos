@@ -14,16 +14,22 @@ const exec = (context) => {
     // log(commandArgs[0], { commandArgs });
     try {
       const out = child_process.execFileSync(commandArgs[0], context.argv, {
-        input: context.stdin,
+//        input: context.stdin,
+        stdio: "inherit",
       });
-      log(out.toString());
+      if (out) {
+        log(out.toString());
+      }
     } catch (e) {
       //      log({ e });
-      e.output.forEach((thing) => {
-        if (thing) {
-          log(thing.toString());
-        }
-      });
+
+      if (e.output) {
+        e.output.forEach((thing) => {
+          if (thing) {
+            log(thing.toString());
+          }
+        });
+      }
       process.exit(e.status);
     }
   } else {

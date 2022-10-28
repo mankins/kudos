@@ -9,14 +9,14 @@ const log = console.log;
 // call the action with the given name
 const dosku = async (commandInput) => {
   // read from STDIN. stdin = '' if no input
-  const stdin = await getStdin();
+  // const stdin = await getStdin();
 
   const { action, argv, flags, input } = commandInput;
   flags.debug &&
     log(chalk.green(JSON.stringify({ action, argv, flags, stdin, input })));
 
   if (Object.prototype.hasOwnProperty.call(actions, action)) {
-    const context = { ...commandInput, stdin };
+    const context = { ...commandInput, stdin: process.stdin };
 
     setContextFunctions(context);
     setFlagDefaults(context); // allow flag defaults to be set from ENV
