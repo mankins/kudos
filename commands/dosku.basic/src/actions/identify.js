@@ -32,7 +32,7 @@ const exec = async (context) => {
   if (flags.help || !rootDir) {
     console.error(
       `Usage:
- $ ${context.personality} identify [--outFile=STDOUT] [--kudosFile=kudos.yml] [--checks={kudos,contributors,lang}] [--lang={nodejs,go}] SEARCH_DIR`
+ $ ${context.personality} identify [--outFile=STDOUT] [--kudosFile=kudos.yml] [--checks={kudos,contributors,lang}] [--lang={nodejs,go}] [--nodeDevDependencies] SEARCH_DIR`
     );
     process.exit(0);
   }
