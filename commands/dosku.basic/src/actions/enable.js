@@ -29,14 +29,19 @@ const exec = async (context) => {
     await toEnable.reduce(async (acc, commandName) => {
       await acc;
 
-      const response = await prompts([
-        {
-          type: "confirm",
-          name: "ok",
-          message: `Are you sure you want to enable "${commandName}" ?`,
-          initial: false,
-        },
-      ]);
+      let response = { ok: false };
+      if (!context.flags.yes) {
+        response = await prompts([
+          {
+            type: "confirm",
+            name: "ok",
+            message: `Are you sure you want to enable "${commandName}" ?`,
+            initial: false,
+          },
+        ]);
+      } else {
+        response.ok = true;
+      }
       //console.log(JSON.stringify(response, null, '  '));
       if (response.ok) {
         log(chalk.green(`Enabling ${commandName}...`));
@@ -47,11 +52,11 @@ const exec = async (context) => {
           commandName,
         ]);
       } else {
-        // skip this one. 
+        // skip this one.
       }
     }, Promise.resolve());
   } else {
-    log(`Usage: ${context.personality} enable [subcommand] [--all]`);
+    log(`Usage: ${context.personality} enable [subcommand] [--all] [--yes]`);
     process.exit(2);
   }
 };
