@@ -25,7 +25,12 @@ const defaultHelp = `
     --help          [Default: false]
 
     Examples
-    $ dosku
+
+    Installed as a global package:
+    $ dosku ...
+
+    Via Npx, without installing:
+    $ npx @kudos-protocol/dosku-cli@next ...
 
     Config
     $ dosku config get
@@ -37,6 +42,7 @@ const defaultHelp = `
     Basic Kudos Protocol
     $ dosku ink [<STDIN = json new line delimited>] [twitter:identifier] [--weight=1] [--createTime=now] [--src=cli] [--description=""]
     $ dosku list [--cohort=current] [--outFile=STDOUT] [--timestamp=now] [--quiet=false]
+    $ dosku identify [--outFile=STDOUT] [--kudosFile=kudos.yml] SEARCH_DIR
 
     Run Commands
     $ dosku run subcommand
