@@ -4,7 +4,7 @@
 
 _`dosku` is `kudos` rearranged_
 
-# Install CLI Tool
+## Install CLI Tool
 
 The `dosku` command line tool can be installed with:
 
