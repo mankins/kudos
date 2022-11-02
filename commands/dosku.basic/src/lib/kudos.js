@@ -42,13 +42,13 @@ const create = async (kudo) => {
   return kudo; // TODO: validate data
 };
 
-const initDb = async () => {
+const initDb = async ({dbDir}) => {
   if (db) {
     // we already have a db object
     return db;
   }
   // STEP 1: make sure data directory exists
-  const kudosDataDir = paths.data;
+  const kudosDataDir = dbDir || paths.data;
   try {
     if (fs.existsSync(kudosDataDir)) {
       //file exists
@@ -107,9 +107,9 @@ const initDb = async () => {
 };
 
 // example implementation of kudos inker
-const store = async (kudo) => {
+const store = async ({kudo, dbDir}) => {
   // make sure paths exist, db initialized
-  const db = await initDb();
+  const db = await initDb({dbDir});
 
   const result = await db("kudos").insert({
     id: kudo.id,
@@ -129,8 +129,8 @@ const store = async (kudo) => {
 };
 
 // returns the entries for a given cohort
-const getCohortEntries = async ({ user = 1, cohort }) => {
-  const db = await initDb();
+const getCohortEntries = async ({ user = 1, cohort, dbDir }) => {
+  const db = await initDb({dbDir});
 
   const result = await db("kudos")
     .select("identifier", "cohort", "weight", "createTime", "description", "id", "context")

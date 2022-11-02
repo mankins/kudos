@@ -36,7 +36,7 @@ const exec = async (context) => {
       );
       process.exit(2);
     }
-    const kudo = await create(kudoData);
+    const kudo = await create({kudoData, dbDir: flags.dbDir});
     if (flags.verbose) {
       log(
         chalk.green(
@@ -44,7 +44,7 @@ const exec = async (context) => {
         )
       );
     }
-    await store(kudo);
+    await store({kudo, dbDir: flags.dbDir});
     done();
   } else if (context.stdin) {
     let dataRead = false;
@@ -89,7 +89,7 @@ const exec = async (context) => {
             // process.exit(2);
           }
           // log(kudoData);
-          const kudo = await create(kudoData); // TODO: flag to skip on errors
+          const kudo = await create({kudoData, dbDir: flags.dbDir}); // TODO: flag to skip on errors
           if (flags.verbose) {
             log(
               chalk.green(
@@ -98,7 +98,7 @@ const exec = async (context) => {
             );
           }
           log(chalk.white(JSON.stringify(kudo)));
-          await store(kudo);
+          await store({kudo, dbDir: flags.dbDir});
         }
       } catch (e) {
         log(chalk.red(e.message), e);
@@ -108,7 +108,7 @@ const exec = async (context) => {
     rl.once('close', () => {
       if (!dataRead) {
         log(
-          `Usage: dosku ink [<STDIN:ndjson>] [twitter:identifier] [--weight=1] [--createTime=now] [--src=cli] [--description=""]
+          `Usage: dosku ink [<STDIN:ndjson>] [twitter:identifier] [--weight=1] [--createTime=now] [--src=cli] [--description=""] [--scope=twitter] [--dbDir=./db] [--verbose]
     
     Example NDJSON import from previous list:
           cat /tmp/abc | jq -cM '.entries[]' | dosku ink
