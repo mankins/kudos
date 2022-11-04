@@ -17,11 +17,15 @@ const exec = (context) => {
     const out = child_process.execFileSync(
       commandArgs[0],
       commandArgs.slice(1),
+      //      context.argv,
       {
-        input: context.stdin,
+        // input: context.stdin,
+        stdio: "inherit",
       }
     );
-    log(out.toString());
+    if (out) {
+      log(out.toString());
+    }
   } else {
     log("Usage: dosku run [subcommand]");
     log(chalk.yellow("You may need to install subcommands first with npx"));

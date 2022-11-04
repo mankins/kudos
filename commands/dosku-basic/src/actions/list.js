@@ -19,8 +19,12 @@ const exec = async (context) => {
     process.exit(0);
   }
 
+  const dbDir = flags.dbDir
+    ? flags.dbDir
+    : context.config.get(`${context.personality}.dbDir`);
+
   // list the entries for a given cohort
-  const entries = await getCohortEntries(flags);
+  const entries = await getCohortEntries({ ...flags, dbDir });
   const sha256 = await objectSha.digest(entries, "SHA-256");
   const outData = JSON.stringify({ context: flags, entries, sha256 }, null, 1);
 

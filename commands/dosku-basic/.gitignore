@@ -6,3 +6,5 @@ tmp
 log
 .env
 .env.local
+kudos-dir
+kudos-dir/*

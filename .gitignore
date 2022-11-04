@@ -30,3 +30,7 @@ tmp
 .env
 /infra/github-actions-sa.json
 credentials
+
+# kudos
+kudos-dir
+kudos-dir/*

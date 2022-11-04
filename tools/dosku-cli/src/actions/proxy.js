@@ -22,7 +22,7 @@ const proxy = (subcommand) => {
           log(out.toString());
         }
       } catch (e) {
-        log({ e });
+//        log({ e });
         if (e.output) {
           e.output.forEach((thing) => {
             if (thing) {

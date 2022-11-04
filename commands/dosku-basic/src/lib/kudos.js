@@ -13,7 +13,7 @@ const devLog = process.env.KUDOS_DEBUG === "true" ? console.log : () => {};
 
 let db;
 
-const create = async (kudo) => {
+const create = async ({ kudo }) => {
   // log(chalk.green('create'));
 
   // check requirements
@@ -26,7 +26,6 @@ const create = async (kudo) => {
 
   kudo.user = kudo.user || 1; // local user id
   kudo.weight = parseFloat(kudo.weight);
-  console.log({ kudo });
   if (kudo.weight > 1) {
     kudo.weight = 1;
   }
@@ -39,10 +38,15 @@ const create = async (kudo) => {
   kudo.createTime = kudo.createTime || new Date().toISOString();
   kudo.description = kudo.description || "";
 
+  // if we have kudo.context check if it's a string, if not stringify it
+  if (kudo.context && typeof kudo.context !== "string") {
+    kudo.context = JSON.stringify(kudo.context);
+  }
+
   return kudo; // TODO: validate data
 };
 
-const initDb = async ({dbDir}) => {
+const initDb = async ({ dbDir }) => {
   if (db) {
     // we already have a db object
     return db;
@@ -107,9 +111,9 @@ const initDb = async ({dbDir}) => {
 };
 
 // example implementation of kudos inker
-const store = async ({kudo, dbDir}) => {
+const store = async ({ kudo, dbDir }) => {
   // make sure paths exist, db initialized
-  const db = await initDb({dbDir});
+  const db = await initDb({ dbDir });
 
   const result = await db("kudos").insert({
     id: kudo.id,
@@ -130,11 +134,19 @@ const store = async ({kudo, dbDir}) => {
 
 // returns the entries for a given cohort
 const getCohortEntries = async ({ user = 1, cohort, dbDir }) => {
-  const db = await initDb({dbDir});
+  const db = await initDb({ dbDir });
 
   const result = await db("kudos")
-    .select("identifier", "cohort", "weight", "createTime", "description", "id", "context")
-    .where("cohort", "=", cohort)
+    .select(
+      "identifier",
+      "cohort",
+      "weight",
+      "createTime",
+      "description",
+      "id",
+      "context"
+    )
+    .where("cohort", "=", `${cohort}`)
     .where("user", "=", user)
     .orderBy("createTime", "asc");
 
@@ -162,4 +174,4 @@ const done = async () => {
   }
 };
 
-export { create, done, getCohortEntries, resetCohort, store };
+export { create, done, getCohortEntries, initDb, resetCohort, store };

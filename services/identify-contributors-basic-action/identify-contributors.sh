@@ -1,9 +1,11 @@
 #!/bin/sh
 
+# simple example: extract from node_modules, package.json
+# Must have npm i first.
+
 echo "Kudos!"
 cd $1
 
-# simple example, extract from node js package.json
 rm /tmp/kudos.txt
 
 echo "nodejs..."

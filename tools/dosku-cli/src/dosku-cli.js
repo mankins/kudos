@@ -1,16 +1,19 @@
 #!/usr/bin/env node
+import fs from 'fs';
+import path from 'path';
 import meow from "meow";
 // import updateNotifier from "update-notifier";
 import { URL } from "url";
 const __dirname = new URL(".", import.meta.url).pathname;
+const personality = __dirname.split("/").slice(-3)[0];
 
 import dotenv from "dotenv";
-dotenv.config({ path: __dirname + ".env" });
+dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 import config from "./config.js";
 import dosku from "./index.js";
 
-// const pkgJson = JSON.parse(fs.readFileSync("./package.json"));
+const pkgJson = JSON.parse(fs.readFileSync( path.resolve(__dirname, "../package.json")));
 
 const defaultHelp = `
   dosku: command line for dosku
@@ -31,6 +34,9 @@ const defaultHelp = `
 
     Via Npx, without installing:
     $ npx @kudos-protocol/dosku-cli@next ...
+
+    Init
+    $ dosku init [--dbDir=.]
 
     Config
     $ dosku config get
@@ -75,6 +81,8 @@ dosku({
   flags: cli.flags,
   input: cli.input,
   config,
+  personality,
+  version: pkgJson.version,
   argv: process.argv.slice(2),
 });
 
