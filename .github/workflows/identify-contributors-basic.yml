@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Identify Contributors Basic
     env:
-      searchDir: .
+      searchDir: ~/.pnpm-store/v3
     steps:
     - uses: actions/checkout@v3
     # use a cached node, more options at https://github.com/actions/setup-node/blob/main/docs/advanced-usage.md
