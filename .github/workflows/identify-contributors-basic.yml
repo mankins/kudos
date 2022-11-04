@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Identify Contributors Basic
     env:
-      searchDir: .pnpm-store/v3
+      searchDir: .
     steps:
     - uses: actions/checkout@v3
     # use a cached node, more options at https://github.com/actions/setup-node/blob/main/docs/advanced-usage.md
@@ -61,7 +61,7 @@ jobs:
     - name: "Identify Contributors"
       run: |
         npx @kudos-protocol/dosku-cli@next config set kudos.context '{\"code\":{\"type\":\"deploy\",\"repositoryUrl\":\"${{github.repositoryUrl}}\",\"commit\":\"${{github.sha}}\"}}'
-        npx @kudos-protocol/dosku-cli@next identify ${{ env.searchDir }} --outFile="kudos-dir/${{ env.cohort }}-${{github.sha}}.ndjson"
+        npx @kudos-protocol/dosku-cli@next identify ${{ env.searchDir }} --nodeDevDependencies=true --outFile="kudos-dir/${{ env.cohort }}-${{github.sha}}.ndjson"
 
     - name: "Ink Kudos"
       run: |
