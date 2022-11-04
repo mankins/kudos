@@ -18,6 +18,14 @@ jobs:
     - name: Get current cohort
       id: cohort
       run: echo "cohort=$(date +'%Y%W')" >> $GITHUB_ENV
+    - name: Setup Build Cache
+      id: build-cache
+      uses: actions/cache@v3
+      env:
+        cache-name: build-cache
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package.json') }}
     - name: Setup Kudos Storage Cache
       id: kudos-dir-cache
       uses: actions/cache@v3
@@ -27,12 +35,21 @@ jobs:
         # npm cache files are stored in `~/.npm` on Linux/macOS
         path: kudos-dir
         key: cache-${{ env.cache-name }}-${{ env.cohort  }}
+
+    # CUSTOMIZE_BUILD START
+    #   - To identify the libraries we need to install
+    - uses: pnpm/action-setup@v2
+      with:
+        version: 6.32.9
     - uses: actions/setup-node@v3
       with:
-        # node-version-file: '.nvmrc' 
-        node-version: 18 
-    # - run: npm ci
-    # - run: npm run build
+        node-version: '18'
+      cache: 'pnpm'
+
+    - name: "Install Application Library"
+      run: pnpm i
+
+    # CUSTOMIZE_BUILD END
 
     - name: "Install Kudos Basic Tools"
       run: |
