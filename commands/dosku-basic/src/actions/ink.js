@@ -70,8 +70,15 @@ const exec = async (context) => {
     let dataRead = false;
     let input = process.stdin;
 
+    // check to see if flags.inFile exists
     if (flags.inFile) {
-      input = fs.createReadStream(flags.inFile);
+      if (fs.existsSync(flags.inFile)) {
+        //file exists
+        input = fs.createReadStream(flags.inFile);
+      } else {
+        log(chalk.red(`File not found: ${flags.inFile}`));
+        process.exit(2);
+      }
     }
 
     const rl = readline.createInterface({
@@ -135,7 +142,7 @@ const exec = async (context) => {
       }
     });
     rl.once("close", () => {
-      if (!dataRead) {
+      if (!dataRead && !flags.inFile) {
         help();
       }
       done();
