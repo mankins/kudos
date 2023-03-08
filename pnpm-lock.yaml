@@ -95,6 +95,7 @@ importers:
     specifiers:
       '@dnslink/js': ^0.12.0
       '@iarna/toml': ^2.2.5
+      '@loremlabs/quadratic-funding': ^0.0.5
       babel-eslint: ^10.1.0
       better-sqlite3: ^7.5.3
       chalk: ^4.1.2
@@ -130,6 +131,7 @@ importers:
       update-notifier: 5.1.0
       uuid: 8.3.2
     devDependencies:
+      '@loremlabs/quadratic-funding': 0.0.5
       babel-eslint: 10.1.0_eslint@8.2.0
       eslint: 8.2.0
       eslint-config-prettier: 8.5.0_eslint@8.2.0
@@ -373,6 +375,10 @@ packages:
   /@leichtgewicht/ip-codec/2.0.4:
     resolution: {integrity: sha512-Hcv+nVC0kZnQ3tD9GVu5xSMR4VVYOteQIr/hwFPVEvPdlXqgGEuRjiheChHgdM+JyqdgNcmzZOX/tnl0JOiI7A==}
     dev: false
+
+  /@loremlabs/quadratic-funding/0.0.5:
+    resolution: {integrity: sha512-DJR4gja2mPDBC/zfXP8z2I7m/U1irFe+YKquEC/BmRb1HNbjgbvasRLnjvEykefr+62JFp+XbyewdrEwtPIb2g==}
+    dev: true
 
   /@next/eslint-plugin-next/12.3.2:
     resolution: {integrity: sha512-Jx0BIS9STamGSbA+vgTxPAi1mRcq4DoH/5kPMs0PFLFi542mmIKUUtYWB61bI+G6KPMTqejYmO3zi+SF6tzGYg==}
